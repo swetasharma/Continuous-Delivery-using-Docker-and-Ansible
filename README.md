@@ -66,7 +66,7 @@ once the release image is created, we create a production like release environme
 which verify the external functionality of the application. finally we tag and publish the release image(we will push our release image to docker hub). We deploy release image created in release stage to a target environment(e.g. Development Environment, QA 0r Staging Environment, even production) we will use Ansible(orchestration tool) to deploy straight into a single production environment running on AWS. We will leverage the AWS cloud formation management service to automate the creation of complete environments in the AWS EC2 container service to manage roll and deployment of our docker release image.  
 
 Preparing your environment:
-- Choosing a Virtualization Platform (vmware/fusion or virtualbox / parallels / https://brew.sh/).
+- Choosing a Virtualization Platform (vmware/fusion / virtualbox / parallels / https://brew.sh/).
 - Installing Brew
 - Installing Docker Tools (Docker, Docker Compose and Docker Machine) brew install docker-compose.
 - Installing Ansible (install python which will also install the python pip package manager)
@@ -74,7 +74,10 @@ Preparing your environment:
     - pip install ansible --upgrade
     - pip install boto boto3  (essential python sdk used to interact with AWS)
     - pip install awscli (install aws command line tools which will enable us to interact with AWS from the command line)
-- Installing other tools
+- Installing other tools 
+    - Git
+    - Sublime text
+    - command tree which provide a simple graphical view of your file system and you can install using brew install tree
 - GitHub, Docker Hub and AWS
 - Creating a Docker virtual machine
 
