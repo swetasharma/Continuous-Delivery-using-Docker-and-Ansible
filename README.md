@@ -17,3 +17,53 @@ Using docker will enable us to create a completely portable workflow that would 
 
 How to achieve continuous Delivery?
 automated tests, automated creation of environments, automated deployments of releases into environments, automated monitoring 
+
+
+Why Docker?How it can help supercharge your continuous delivery workflow? Why choosing Docker for Continuous Delivery?
+Speed (provide us fastest way possible to create isolated, consistent and repeatable environments)
+Portability (abstract and immutable run time environment packaging and distribution capabilities)
+Automation
+
+
+Docker images are created from specifications called dockerfiles that allow you to automate the process of building docker images
+
+
+Docekrfile:
+FROM ubuntu:trusty
+MAINTAINER Sweta Sharma --Image Metadata
+
+ENV MY_ENV_VAR = some_value -- Environment Variables
+
+RUN apt-get install nginx -y  -- Commands to run on build
+
+COPY my_file /path/to/my_file -- copy files to image
+
+
+COMMAND ["START.SH","-X OPT"]  -- comand to run on start
+
+
+dockercompose.yml allows you to specify the complete multi container environments that can be created and destroyed with a single command
+
+
+dockercompose.yml:
+
+app:                                                      "app" service (aka conatainer)
+  image: myrog/myrepo:latest                              Image the service is based from
+  links:                                                  List of service dependencies
+    -db                                                   
+  volumes:                                                List of volumes to mount
+    -/path/to/host:/path
+  environment:                                            Environment variables 
+    MYSQL_DB: todobackend
+ ....
+ 
+ db:
+  image: mysql                                            "db" service (another container)
+ ....
+ 
+ 
+ 
+
+
+
+
