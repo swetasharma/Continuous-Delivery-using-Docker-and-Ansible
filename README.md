@@ -14,3 +14,6 @@ How to build a production-class continuous delivery workflow / pipeline that you
 4. Tag and publish each tested and verified docker release image.
 
 Using docker will enable us to create a completely portable workflow that would first develop and run locally and then set up popular jenkins continuous delivery system we will configure integration with GitHub allowing the continuous dellivery workflow to be triggered on each application source code commit. Assuming the application passes all unit, integration and acceptance tests our pipeline will publish release images to docker hub which will be deployed to AWS using Ansible using Infrastructure as a code approach with AWS cloud formation and leveraging the AWS EC2 container service for running docker containers in production.
+
+How to achieve continuous Delivery?
+automated tests, automated creation of environments, automated deployments of releases into environments, automated monitoring 
