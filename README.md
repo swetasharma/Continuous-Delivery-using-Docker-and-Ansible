@@ -65,6 +65,16 @@ Docker Release Image conatains a minimal runtime environment suitable for deploy
 once the release image is created, we create a production like release environment using docker compose and then run acceptance tests
 which verify the external functionality of the application. finally we tag and publish the release image(we will push our release image to docker hub). We deploy release image created in release stage to a target environment(e.g. Development Environment, QA 0r Staging Environment, even production) we will use Ansible(orchestration tool) to deploy straight into a single production environment running on AWS. We will leverage the AWS cloud formation management service to automate the creation of complete environments in the AWS EC2 container service to manage roll and deployment of our docker release image.  
 
+Preparing your environment:
+- Choosing a Virtualization Platform
+- Installing Brew
+- Installing Docker Tools
+- Installing Ansible
+- Installing other tools
+- GitHub, Docker Hub and AWS
+- Creating a Docker virtual machine
+
+
 
 
 
