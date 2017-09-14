@@ -28,7 +28,7 @@ Automation
 Docker images are created from specifications called dockerfiles that allow you to automate the process of building docker images
 
 
-Docekrfile:
+Dockerfile: provides automation of runtime environemnts and docker compose automates the creation of multi container environments.
 FROM ubuntu:trusty
 MAINTAINER Sweta Sharma --Image Metadata
 
