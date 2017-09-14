@@ -9,7 +9,7 @@ Continuous delivery workflow from scratch using Docker and Ansible allowing us t
 
 How to build a production-class continuous delivery workflow / pipeline that you can apply to any application or platform using Docker and Ansible:
 1. Take care of running unit and integration test.
-2. Building application artifacts.
+2. Building application artifacts.(e.g. Java JAR files)
 3. Creating docker release images and running acceptance test to verify external functionality.
 4. Tag and publish each tested and verified docker release image.
 
@@ -19,7 +19,7 @@ How to achieve continuous Delivery?
 automated tests, automated creation of environments, automated deployments of releases into environments, automated monitoring 
 
 
-Why Docker?How it can help supercharge your continuous delivery workflow? Why choosing Docker for Continuous Delivery?
+Why Docker? How it can help supercharge your continuous delivery workflow? Why choosing Docker for Continuous Delivery?
 Speed (provide us fastest way possible to create isolated, consistent and repeatable environments)
 Portability (abstract and immutable run time environment packaging and distribution capabilities)
 Automation
@@ -39,7 +39,7 @@ RUN apt-get install nginx -y  -- Commands to run on build
 COPY my_file /path/to/my_file -- copy files to image
 
 
-COMMAND ["START.SH","-X OPT"]  -- comand to run on start
+COMMAND ["START.SH","-X OPT"]  -- command to run on start
 
 
 dockercompose.yml allows you to specify the complete multi container environments that can be created and destroyed with a single command
@@ -61,8 +61,9 @@ app:                                                      "app" service (aka con
   image: mysql                                            "db" service (another container)
  ....
  
- 
- 
+Docker Release Image conatains a minimal runtime environment suitable for deployment into production, installs application artifacts.
+once the release image is created, we create a production like release environment using docker compose and then run acceptance tests
+which verify the external functionality of the application. finally we tag and publish the release image(we will push our release image to docker hub). We deploy release image created in release stage to a target environment(e.g. Development Environment, QA 0r Staging Environment, even production) we will use Ansible(orchestration tool) to deploy straight into a single production environment running on AWS. We will leverage the AWS cloud formation management service to automate the creation of complete environments in the AWS EC2 container service to manage roll and deployment of our docker release image.  
 
 
 
