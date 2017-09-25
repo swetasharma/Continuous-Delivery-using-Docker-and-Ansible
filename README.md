@@ -81,6 +81,16 @@ Preparing your environment:
 - GitHub, Docker Hub and AWS
 - Creating a Docker virtual machine
 
+Create a Base Image: create and activate the runtime environment for the application
+Create a Development Image: Add test and build dependemcies after which you will be able to run our first test
+To facilitate the integratio test against mysql backend we will create more complex envirnment usig dicke r compose this would imclude
+multiple containers and allow us to run integration test from an application container against the mysql database running in a separate container.
+
+Separating the Base Image:
+Operations ->commit(weekly or monthly)-> Dockerfile(Base Image)-> push -> Docker Repository
+Developer -> commit(Hourly or Daily)-> application source code ->push-> source code repository->web hook -> continuous delivery workflow(continuous Integration , continuous deployment)
+
+
 
 
 
