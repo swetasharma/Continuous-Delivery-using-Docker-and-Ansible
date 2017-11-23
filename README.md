@@ -94,4 +94,7 @@ Developer -> commit(Hourly or Daily)-> application source code ->push-> source c
 
 
 
+Docker commands:
 
+1. sudo apt install docker.io -y 
+2. sudo docker run hello-world
