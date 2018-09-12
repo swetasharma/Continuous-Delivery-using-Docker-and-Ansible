@@ -1,0 +1,212 @@
+Ansible:
+https://gist.github.com/gauravve
+https://greghub.com/feed/automate-sysadmin-ansible/  nice blog to read for ansible
+
+It does all its  work over ssh
+wherever you going run playbook sfrom you neeed ansible install on that
+yum install epel-release
+yum update
+yum install git python python-devel python-pip openssl ansible
+Ansible is installed if we do ansible --version
+lets edit our ansible.config 
+config file = /etc/ansible/ansible.cfg
+vim /etc/ansible/ansible.cfg
+https://raw.githubusercontent.com/ansible/ansible/devel/examples/ansible.cfg
+https://docs.ansible.com/ansible/latest/installation_guide/intro_configuration.html
+
+
+inventory      = /etc/ansible/hosts
+#library        = /usr/share/my_modules/
+#module_utils   = /usr/share/my_module_utils/
+#remote_tmp     = ~/.ansible/tmp
+#local_tmp      = ~/.ansible/tmp
+#plugin_filters_cfg = /etc/ansible/plugin_filters.yml
+#forks          = 5
+#poll_interval  = 15
+sudo_user      = root
+#ask_sudo_pass = True
+#ask_pass      = True
+#transport      = smart
+#remote_port    = 22
+#module_lang    = C
+#module_set_locale = False
+
+
+and because there is no daemon running for ansible there is nothing we have to restart ansible will read its configuration file everytime you run ansible command
+now when we run ansible commands ot anisible palybooks we run them against nodes and those nodes are identified by their name and those names are like a DNS entry they are indicated by the values listed in a host file
+it is listed in cd etc/ansible
+cat hosts
+mv hosts hosts.original
+vim hosts
+we gonna set two groups you can setup as many groups you want and they are identified with a bracket and name 
+[local]
+localhost
+
+[centos]
+tcox2.mylabserver.com
+
+[ubuntu]
+tcox4.mylabserver.com
+ 
+local, centos, ubuntu identify those nodes
+there is couple of things we need to set up to be sure we have got the permission to run our command
+adduser ansible
+passwd ansible
+enter the password
+visudo
+
+##Ansible root to run commands anywhere
+root ALL=(ALL) ALL
+add below line after above line
+ansible ALL=(ALL) NOPASSWD: ALL
+:wq!
+
+create user accounts on each of the nodes that we are going to manage with ansible
+adduser ansible
+passwd ansible
+enter the password
+visudo
+search for root
+ansible ALL=(ALL) NOPASSWD: ALL
+
+su ansible -
+sudo apt-get update
+
+there is one more thing we have to do:
+since we operate over ssh since we will not be passing any password either to become sudo we dont wanna password when we run a playbook either
+this is optional because you can provide password when you run the playbook but most of the time when you develop a playbook as a part of cron job or jenkins job
+you dont want to be prompted for a password to be provided each time in that case what we can do is we can set up ssh
+ssh-keygen
+su ansible -
+ssh-keygen
+ssh-copy-id ansible@tcox2.mylabserver.com
+https://github.com/rywillia/ansible-ssh-copy-id
+once that done you should be able to 
+ssh tcox2.mylabserver.com
+
+
+ssh-copy-id ansible@tcox4.mylabserver.com
+ssh tcox4.mylabserver.com
+
+we need to do copy id to ourserlves as well else our ansible connection even to localhost will conenct vis ssh and without a key exchange eben my connection to localhost will ask for password
+example if you do ssh localhost it still wants to know ansible password
+we also need to ssh-copy-id localhost
+provide localhost password
+now you can do ssh
+ssh localhost and you get a connection without having to login
+
+we are ready to use our ansible environment:
+
+
+Ansible Documentation:
+ansible tower is for enterprise automation.
+agentless opensource version of ansible that we use
+Inventory: host file that contains the group of individual host that we may choose to work our playbooks against is actually what call inventory and our inventory can contain individual node or groups pattern etc
+playbook : its a text file that contian yml formatted options that tell ansible what to do what modules to run what options to use connected to our nodes in order to perform various work
+
+
+How to build the playbook around the module 
+
+run one command and update all .. you dont have to login individually as long as ssh is set up and user key exchange you can even do it based upon conditions
+
+
+Running ansible commands: cat /etc/ansible/hosts
+ansible all -m ping : it ensures your ansible nodes are up and communicating and ansible can use ssh to run against them
+there nodes in our environment define by three groups
+
+ansible all -a "ls -al /home/ansible"
+ansible all -a "cat /var/log/messages"
+
+sudo ansible all -a "cat /var/log/messages"
+
+"failed to connect to the host via ssh"
+because it is trying to become a root user because we are running sudo and we didnt exchange the root key with those individual nodes
+ansible all -s -a "cat /var/log/messgaes"
+ansible local -s -a "cat /var/log/messgaes"
+vim test.txt
+cd
+mkdir ansible
+cd ansible/
+vim test.txt
+ll
+ansible centos -m copy -a "src=test.txt dest=/temp/test.txt"
+
+ansible ubuntu -m apt -a "name=elinks state=latest"
+it will fail what you need to do to install packages
+ansible ubuntu -s -m apt -a "name=elinks state=latest"
+
+ansible ubuntu -s -m apt -a "name=elinks state=absent"
+any module that we can run a playbook we can run at the command line as a single command
+ansible centos -m user -a "name=test" we are adding test user to centos node
+and it will say permission denied
+ansible centos -s -m user -a "name=test"
+ll
+you will see that the test user is created and available to us tp set password for.
+ansible centos -s -m user -a "name=test state=absent" to remove the user
+cat /etc/passwd | grep test
+and you will see its no longer there
+ansible group/host -a(arbitory command) "command"
+which true
+ansible all -s -a "/bin/true"
+ansible all -s -m yum -a "name=httpd state=latest"
+
+these are individual items that will run against the node over ssh basedon how we configure our system
+basic structure of yml file to create a playbook
+
+Playbook structure with YAML
+YAML is a simple markup language, but it has some specific formatting requirements that we will want to be aware of. We will look at that and show a playbook with all the major sections defined as an example.
+
+pwd
+/home/ansible/ansible
+mkdir playbooks/
+ll
+vim structure.yml
+https://github.com/linuxacademy/ansible-cfg-mgmt/blob/master/playbooks/server_setup.yml
+https://github.com/linuxacademy/content-ansible-playbooks/tree/master/Playbooks
+https://www.linode.com/docs/applications/configuration-management/learn-how-to-install-ansible-and-run-playbooks/
+
+call startservice when you successfully install package httpd
+the indentation is important in yaml file when the ansible scans the yml file it will know what belongs to what..ansible will tell us its been screwed up
+
+ansible-playbook structure.yaml
+systemctl status httpd
+structure is important here otherwise ansible will not know what it needs to do
+
+Gathering facts:
+ansible all --list-hosts
+
+cat /etc/ansible/hosts
+ansible needs to determine some way to whether it can run place it might be asked to on a remote node
+and it does that goes out and get information about that node we can explicitly get facts if we just want to if we want get the facts from a particular host or a group of hosts
+ansible centos -m setup
+this will gather the facts which ansible does by default when it runs the playbook
+
+ansible centos -m setup | grep ipv4
+ansible centos -m setup -a 'filter=*ipv4*'
+
+ansible centos -m setup --tree facts you will see facts directory you will get facts of that particular environment
+cd facts
+ll
+you will facts to search on
+
+ansible centos -m setup -a 'filter=ansible_domain'
+
+it tells things like ip address, os version, how much disk is available etc etc
+ansible all -m setup -a 'filter=ansible_domain'
+
+Variable substitution:
+you use variables in playbook in two ways
+
+cat /etc/ansible/hosts
+vim vartest.yml
+variables are read as soon as the playbook is started
+
+ansible-playbook varsubst.yml --extra-vars "hosts=centos gather=yes pkg=telnet"
+ansible centos -s -m yum -a "name=telnet state=absent"
+
+you can paas in variables to a playbook indocating in the playbook the variable names surrounded by double brackets and single quote using --extra vars with appropriate names and values
+or you can define those variables within the playbook by creating a variable section with the appropriate names and values
+
+Debug statement: to make sure things behave as expected
+vim debug.yaml
+ansible-playbook debug.yaml
